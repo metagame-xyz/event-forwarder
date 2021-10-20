@@ -55,12 +55,10 @@ const webhookOptions = (body) => ({
 contract.events
     .Mint()
     .on('data', async (event) => {
-        const minterAddress = event.returnValues[0];
-        const tokenId = event.returnValues[1];
-
-        const body = { minterAddress, tokenId };
-
-        console.log('body:', body);
+        const body = {
+            minterAddress: event.returnValues[0],
+            tokenId: event.returnValues[1],
+        };
 
         const data = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body));
 
