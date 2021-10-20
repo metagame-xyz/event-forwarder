@@ -52,6 +52,12 @@ const webhookOptions = (body) => ({
     },
 });
 
+console.log(
+    `listening on https://${
+        NETWORK == 'ethereum' ? '' : NETWORK
+    }.etherscan.io/address/${CONTRACT_ADDRESS}`,
+);
+
 contract.events
     .Mint()
     .on('data', async (event) => {
