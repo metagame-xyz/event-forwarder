@@ -13,7 +13,46 @@ const infuraNetworkString = NETWORK == 'ethereum' ? 'mainnet' : `${NETWORK}`;
 const etherscanNetworkString = NETWORK == 'ethereum' ? '' : `-${NETWORK}`;
 const providerURL = `wss://${infuraNetworkString}.infura.io/ws/v3/${INFURA_API_KEY}`;
 
-const web3 = new Web3(providerURL);
+const web3 = new Web3();
+
+const debug = (...messages) => console.log(...messages);
+/**
+ * Refreshes provider instance and attaches even handlers to it
+ */
+function refreshProvider(web3Obj, providerUrl) {
+    let retries = 0;
+
+    function retry(event) {
+        if (event) {
+            debug(['event', event]);
+            debug('Web3 provider disconnected or errored.');
+            retries += 1;
+
+            if (retries > 5) {
+                debug(`Max retries of 5 exceeding: ${retries} times tried`);
+                return setTimeout(refreshProvider, 5000);
+            }
+        } else {
+            debug(`Reconnecting web3 provider`);
+            refreshProvider(web3Obj, providerUrl);
+        }
+
+        return null;
+    }
+
+    const provider = new Web3.providers.WebsocketProvider(providerUrl);
+
+    provider.on('end', (e) => retry(e));
+    provider.on('error', (e) => retry());
+
+    web3Obj.setProvider(provider);
+
+    debug('New Web3 provider initiated');
+
+    return provider;
+}
+
+refreshProvider(web3, providerURL);
 
 const fetchBaseOptions = {
     retry: 12,
@@ -72,4 +111,5 @@ contract.events
     })
     .on('error', (error) => {
         console.log('error:', error);
-    });
+    })
+    .on('end', () => console.log('connectnion ended'));
