@@ -1,6 +1,7 @@
 import Web3 from 'web3';
 import fetch from 'node-fetch-retry';
 import { createHmac } from 'crypto';
+const { createAlchemyWeb3 } = require("@alch/alchemy-web3")
 
 const NETWORK = process.env.NETWORK.toLowerCase();
 const INFURA_API_KEY = process.env.INFURA_API_KEY;
@@ -8,51 +9,54 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 const BIRTHBLOCK_WEBHOOK_URL = process.env.BIRTHBLOCK_WEBHOOK_URL;
 const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
+const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 
 const infuraNetworkString = NETWORK == 'ethereum' ? 'mainnet' : `${NETWORK}`;
+const alchemyNetworkString = NETWORK == 'ethereum' ? 'mainnet' : `${NETWORK}`;
 const etherscanNetworkString = NETWORK == 'ethereum' ? '' : `-${NETWORK}`;
 const providerURL = `wss://${infuraNetworkString}.infura.io/ws/v3/${INFURA_API_KEY}`;
 
-const web3 = new Web3();
+// const web3 = new Web3();
+const web3 = createAlchemyWeb3(`wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/ws/${ALCHEMY_API_KEY}`);
 
-const debug = (...messages) => console.log(...messages);
-/**
- * Refreshes provider instance and attaches even handlers to it
- */
-function refreshProvider(web3Obj, providerUrl) {
-    let retries = 0;
+// const debug = (...messages) => console.log(...messages);
+// /**
+//  * Refreshes provider instance and attaches even handlers to it
+//  */
+// function refreshProvider(web3Obj, providerUrl) {
+//     let retries = 0;
 
-    function retry(event) {
-        if (event) {
-            debug(['event', event]);
-            debug('Web3 provider disconnected or errored.');
-            retries += 1;
+//     function retry(event) {
+//         if (event) {
+//             debug(['event', event]);
+//             debug('Web3 provider disconnected or errored.');
+//             retries += 1;
 
-            if (retries > 5) {
-                debug(`Max retries of 5 exceeding: ${retries} times tried`);
-                return setTimeout(refreshProvider, 5000);
-            }
-        } else {
-            debug(`Reconnecting web3 provider`);
-            refreshProvider(web3Obj, providerUrl);
-        }
+//             if (retries > 5) {
+//                 debug(`Max retries of 5 exceeding: ${retries} times tried`);
+//                 return setTimeout(refreshProvider, 5000);
+//             }
+//         } else {
+//             debug(`Reconnecting web3 provider`);
+//             refreshProvider(web3Obj, providerUrl);
+//         }
 
-        return null;
-    }
+//         return null;
+//     }
 
-    const provider = new Web3.providers.WebsocketProvider(providerUrl);
+//     const provider = new Web3.providers.WebsocketProvider(providerUrl);
 
-    provider.on('end', (e) => retry(e));
-    provider.on('error', (e) => retry());
+//     provider.on('end', (e) => retry(e));
+//     provider.on('error', (e) => retry(e));
 
-    web3Obj.setProvider(provider);
+//     web3Obj.setProvider(provider);
 
-    debug('New Web3 provider initiated');
+//     debug('New Web3 provider initiated');
 
-    return provider;
-}
+//     return provider;
+// }
 
-refreshProvider(web3, providerURL);
+// refreshProvider(web3, providerURL);
 
 const fetchBaseOptions = {
     retry: 12,
