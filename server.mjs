@@ -18,10 +18,10 @@ const providerURL = `wss://${infuraNetworkString}.infura.io/ws/v3/${INFURA_API_K
 
 // const web3 = new Web3();
 const web3 = createAlchemyWeb3(
-    `wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/ws/${ALCHEMY_API_KEY}`,
+    `wss://eth-${alchemyNetworkString}.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
 );
 
-console.log(`wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/v2/${ALCHEMY_API_KEY}`);
+console.log(`wss://eth-${alchemyNetworkString}.alchemyapi.io/v2/${ALCHEMY_API_KEY}`);
 
 // const debug = (...messages) => console.log(...messages);
 // /**
