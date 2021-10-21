@@ -67,15 +67,15 @@ contract.events
             tokenId: event.returnValues[1],
         };
 
-        console.log(`${minterAddress} minted tokenId ${tokenId}`);
+        console.log(`${body.minterAddress} minted tokenId ${body.tokenId}`);
 
         const result = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body));
 
         if (result.error) {
-            console.error(error);
+            console.error(result.error);
         } else {
             console.log(
-                `${result.minterAddress} with   tokenId ${tokenId} has been added or updated`,
+                `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
             );
         }
     })
