@@ -21,6 +21,8 @@ const web3 = createAlchemyWeb3(
     `wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/ws/${ALCHEMY_API_KEY}`,
 );
 
+console.log(`wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/v2/${ALCHEMY_API_KEY}`);
+
 // const debug = (...messages) => console.log(...messages);
 // /**
 //  * Refreshes provider instance and attaches even handlers to it
