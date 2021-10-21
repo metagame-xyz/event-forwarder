@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 import fetch from 'node-fetch-retry';
 import { createHmac } from 'crypto';
-const { createAlchemyWeb3 } = require("@alch/alchemy-web3")
+import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 
 const NETWORK = process.env.NETWORK.toLowerCase();
 const INFURA_API_KEY = process.env.INFURA_API_KEY;
@@ -17,7 +17,9 @@ const etherscanNetworkString = NETWORK == 'ethereum' ? '' : `-${NETWORK}`;
 const providerURL = `wss://${infuraNetworkString}.infura.io/ws/v3/${INFURA_API_KEY}`;
 
 // const web3 = new Web3();
-const web3 = createAlchemyWeb3(`wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/ws/${ALCHEMY_API_KEY}`);
+const web3 = createAlchemyWeb3(
+    `wss://eth-${alchemyNetworkString}.ws.alchemyapi.io/ws/${ALCHEMY_API_KEY}`,
+);
 
 // const debug = (...messages) => console.log(...messages);
 // /**
