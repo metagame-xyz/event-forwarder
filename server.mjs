@@ -11,6 +11,7 @@ const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 
 const alchemyNetworkString = NETWORK == 'ethereum' ? 'mainnet' : `${NETWORK}`;
 const etherscanNetworkString = NETWORK == 'ethereum' ? '' : `-${NETWORK}`;
+const blackholeAddress = '0x0000000000000000000000000000000000000000';
 
 const web3 = createAlchemyWeb3(
     `wss://eth-${alchemyNetworkString}.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
@@ -60,11 +61,13 @@ console.log(
 );
 
 contract.events
-    .Mint()
+    .Transfer({
+        filter: { from: blackholeAddress },
+    })
     .on('data', async (event) => {
         const body = {
-            minterAddress: event.returnValues[0],
-            tokenId: event.returnValues[1],
+            minterAddress: event.returnValues[1],
+            tokenId: event.returnValues[2],
         };
 
         console.log(`${body.minterAddress} minted tokenId ${body.tokenId}`);

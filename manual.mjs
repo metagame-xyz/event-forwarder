@@ -2,7 +2,11 @@ import fetch from 'node-fetch-retry';
 import { createHmac } from 'crypto';
 const BIRTHBLOCK_WEBHOOK_URL = process.env.BIRTHBLOCK_WEBHOOK_URL;
 const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
-const [minterAddress, tokenId] = process.argv.slice(2);
+
+const minterAddress = '0x2e0e3F06289627A0C26Fe84178fbB10adD0e7C4C';
+const tokenId = 1;
+
+console.log('BIRTHBLOCK_WEBHOOK_URL:', BIRTHBLOCK_WEBHOOK_URL);
 
 async function main() {
     const fetchBaseOptions = {
