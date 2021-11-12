@@ -13,6 +13,7 @@
     "dependencies": {
         "@alch/alchemy-web3": "^1.1.6",
         "crypto": "^1.0.1",
+        "ethers": "^5.5.1",
         "node-fetch-retry": "^2.0.0"
     },
     "devDependencies": {
