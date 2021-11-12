@@ -5,7 +5,7 @@ import {
     fetcher,
     fetchBaseOptions,
     CONTRACT_ADDRESS,
-} from '../utils';
+} from './utils/index.mjs';
 
 const NETWORK = process.env.NETWORK.toLowerCase();
 const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
