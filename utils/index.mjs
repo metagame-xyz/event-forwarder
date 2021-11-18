@@ -104,7 +104,7 @@ export async function fetcher(url, options) {
             if (retry === 0) {
                 throw new FetcherError(error);
             }
-            await sleep(1000);
+            await sleep(2000);
         }
     }
 }

@@ -23,8 +23,15 @@ const web3 = createAlchemyWeb3(
 
 const slackClient = new WebClient(SLACK_API_TOKEN);
 
-function slackText(userName, tokenId) {
+function newMintString(userName, tokenId) {
     return `${userName} just minted #${tokenId} https://${networkStrings.opensea}opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId}`;
+}
+
+async function slack(text) {
+    return await slackClient.chat.postMessage({
+        channel: conversationId,
+        text,
+    });
 }
 
 const getContractAbi = async (contractAddress) =>
@@ -78,20 +85,21 @@ contract.events
             console.log(`${minterAddress} with   tokenId ${tokenId} has been added or updated`);
 
             try {
-                await fetcher(openseaForceUpdateURL(tokenId), fetchBaseOptions);
+                const { permalink } = await fetcher(
+                    openseaForceUpdateURL(tokenId),
+                    fetchBaseOptions,
+                );
+                console.log(permalink);
             } catch (error) {
                 if (error instanceof FetcherError) {
-                    // do nothing - FetcherError gets logged by fetcher
+                    await slack(`Metadata force update failed: ${error.url}`);
                 } else {
                     console.error(`unkown error: ${error.name} ${error.message}`);
                 }
             }
 
             try {
-                await slackClient.chat.postMessage({
-                    channel: conversationId,
-                    text: slackText(userName, tokenId),
-                });
+                await slack(newMintString(userName, tokenId));
             } catch (error) {
                 console.error(`unkown error: ${error.name} ${error.message}`);
             }
