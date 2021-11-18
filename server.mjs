@@ -1,44 +1,49 @@
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+import { WebClient } from '@slack/web-api';
+
 import {
     webhookOptions,
     BIRTHBLOCK_WEBHOOK_URL,
     fetcher,
     fetchBaseOptions,
     CONTRACT_ADDRESS,
+    SLACK_API_TOKEN,
+    conversationId,
+    openseaForceUpdateURL,
+    FetcherError,
+    networkStrings,
+    ALCHEMY_API_KEY,
+    ETHERSCAN_API_KEY,
+    blackholeAddress,
 } from './utils/index.mjs';
 
-const NETWORK = process.env.NETWORK.toLowerCase();
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
-const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
-
-const alchemyNetworkString = NETWORK == 'ethereum' ? 'mainnet' : `${NETWORK}`;
-const etherscanNetworkString = NETWORK == 'ethereum' ? '' : `-${NETWORK}`;
-const blackholeAddress = '0x0000000000000000000000000000000000000000';
-
 const web3 = createAlchemyWeb3(
-    `wss://eth-${alchemyNetworkString}.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+    `wss://${networkStrings.alchemy}alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
 );
+
+const slackClient = new WebClient(SLACK_API_TOKEN);
+
+function slackText(userName, tokenId) {
+    return `${userName} just minted #${tokenId} https://${networkStrings.opensea}opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId}`;
+}
 
 const getContractAbi = async (contractAddress) =>
     await fetcher(
-        `https://api${etherscanNetworkString}.etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${ETHERSCAN_API_KEY}`,
+        `https://${networkStrings.etherscanAPI}etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${ETHERSCAN_API_KEY}`,
         fetchBaseOptions,
     );
 
-let contractAbi;
-try {
-    ({ result: contractAbi } = await getContractAbi(CONTRACT_ADDRESS));
-} catch (error) {
-    console.error(error);
+const { status, result: contractAbi } = await getContractAbi(CONTRACT_ADDRESS);
+
+if (status !== '1') {
+    console.error(`getContractAbi Error: ${contractAbi}`);
     process.exit(1);
 }
 
 const contract = new web3.eth.Contract(JSON.parse(contractAbi), CONTRACT_ADDRESS);
 
 console.log(
-    `listening on https://${
-        NETWORK == 'ethereum' ? '' : NETWORK + '.'
-    }etherscan.io/address/${CONTRACT_ADDRESS}`,
+    `listening on https://${networkStrings.etherscan}etherscan.io/address/${CONTRACT_ADDRESS}`,
 );
 
 contract.events
@@ -46,6 +51,7 @@ contract.events
         filter: { from: blackholeAddress },
     })
     .on('data', async (event) => {
+        console.log('Event!');
         const body = {
             minterAddress: event.returnValues[1],
             tokenId: event.returnValues[2],
@@ -53,20 +59,43 @@ contract.events
 
         console.log(`${body.minterAddress} minted tokenId ${body.tokenId}`);
 
-        let result;
+        let status, result; // could also pull out 'message'
+
+        /* Send data to birthblock service */
         try {
-            result = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body));
+            ({ status, result } = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body)));
         } catch (error) {
-            console.error('catching fetcher error');
-            console.error(error);
+            if (error instanceof FetcherError) {
+                // do nothing - FetcherError gets logged by fetcher
+            } else {
+                console.error(`unkown error: ${error.name} ${error.message}`);
+            }
         }
 
-        if (result.error) {
-            console.error(result.error);
-        } else {
-            console.log(
-                `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
-            );
+        /* If no error from birthblock service, force update Opensea and send Slack message */
+        if (status == 1) {
+            const { minterAddress, tokenId, ensName } = result;
+            const userName = ensName || minterAddress.substr(0, 6);
+            console.log(`${minterAddress} with   tokenId ${tokenId} has been added or updated`);
+
+            try {
+                await fetcher(openseaForceUpdateURL(tokenId), fetchBaseOptions);
+            } catch (error) {
+                if (error instanceof FetcherError) {
+                    // do nothing - FetcherError gets logged by fetcher
+                } else {
+                    console.error(`unkown error: ${error.name} ${error.message}`);
+                }
+            }
+
+            try {
+                await slackClient.chat.postMessage({
+                    channel: conversationId,
+                    text: slackText(userName, tokenId),
+                });
+            } catch (error) {
+                console.error(`unkown error: ${error.name} ${error.message}`);
+            }
         }
     })
     .on('error', (error) => {

@@ -1,27 +1,17 @@
 import {
-    getBirthblockContract,
     webhookOptions,
     BIRTHBLOCK_WEBHOOK_URL,
     CONTRACT_ADDRESS,
     fetcher,
     fetchBaseOptions,
 } from '../utils/index.mjs';
+
 // const minterAddress = '0x001cF1FAa42b18021c90A29e622e83fffE2Be6ce';
 // const tokenId = 341;
 
-const tuples = [['0xEeFC49b3247b605441B8c6Ca541d3769A77ea3d7', 407]];
+const tuples = [['0x43cb03e0f573f1779b2f288be9198dd2681c55e1', 442]];
 
 async function main() {
-    const [birthblockContract, filter] = getBirthblockContract();
-
-    let events;
-    try {
-        events = await birthblockContract.queryFilter(filter);
-    } catch (error) {
-        console.log('events error');
-        console.log(error);
-    }
-
     async function runOnce() {
         const body = {
             minterAddress,

@@ -1,10 +1,11 @@
 import {
-    getBirthblockContract,
     webhookOptions,
     BIRTHBLOCK_WEBHOOK_URL,
     fetcher,
     fetchBaseOptions,
 } from '../utils/index.mjs';
+
+import { getBirthblockContract } from '../utils/dev.mjs';
 
 async function main() {
     const [birthblockContract, filter] = getBirthblockContract();
@@ -19,7 +20,7 @@ async function main() {
 
     const tuples = [];
 
-    for (let i = 200; i < events.length; i++) {
+    for (let i = 441; i < 443; i++) {
         const address = events[i].args[1];
         const tokenId = events[i].args[2].toNumber();
         console.log(`address: ${address} tokenId: ${tokenId}`);
@@ -61,7 +62,7 @@ async function main() {
         }
     }
 
-    // await runLoop();
+    await runLoop();
 }
 
 main()
