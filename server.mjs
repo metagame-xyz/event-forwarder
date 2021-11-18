@@ -51,7 +51,6 @@ contract.events
         filter: { from: blackholeAddress },
     })
     .on('data', async (event) => {
-        console.log('Event!');
         const body = {
             minterAddress: event.returnValues[1],
             tokenId: event.returnValues[2],
