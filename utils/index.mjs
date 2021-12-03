@@ -2,9 +2,13 @@ import { createHmac } from 'crypto';
 import fetch from 'node-fetch-retry';
 
 export const BIRTHBLOCK_WEBHOOK_URL = process.env.BIRTHBLOCK_WEBHOOK_URL;
+export const BIRTHBLOCK_CONTRACT_ADDRESS = process.env.BIRTHBLOCK_CONTRACT_ADDRESS;
+
+export const TOKEN_GARDEN_WEBHOOK_URL = process.env.TOKEN_GARDEN_WEBHOOK_URL;
+export const TOKEN_GARDEN_CONTRACT_ADDRESS = process.env.TOKEN_GARDEN_CONTRACT_ADDRESS;
+
 export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
-export const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 export const INFURA_ID = process.env.INFURA_ID;
 export const NETWORK = process.env.NETWORK.toLowerCase();
@@ -109,6 +113,17 @@ export async function fetcher(url, options) {
     }
 }
 
-export function openseaForceUpdateURL(tokenId) {
-    return `https://${networkStrings.openseaAPI}opensea.io/api/v1/asset/${CONTRACT_ADDRESS}/${tokenId}/?force_update=true`;
+export function openseaForceUpdateURL(tokenId, contractAddress) {
+    return `https://${networkStrings.openseaAPI}opensea.io/api/v1/asset/${contractAddress}/${tokenId}/?force_update=true`;
+}
+
+export async function getContractAbi(contractAddress) {
+    await fetcher(
+        `https://${networkStrings.etherscanAPI}etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${ETHERSCAN_API_KEY}`,
+        fetchBaseOptions,
+    );
+}
+
+export function newMintString(userName, tokenId, nftName) {
+    return `${userName} just minted #${tokenId} for ${nftName} https://${networkStrings.opensea}opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId}`;
 }
