@@ -117,13 +117,12 @@ export function openseaForceUpdateURL(tokenId, contractAddress) {
     return `https://${networkStrings.openseaAPI}opensea.io/api/v1/asset/${contractAddress}/${tokenId}/?force_update=true`;
 }
 
-export async function getContractAbi(contractAddress) {
+export const getContractAbi = async (contractAddress) =>
     await fetcher(
         `https://${networkStrings.etherscanAPI}etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${ETHERSCAN_API_KEY}`,
         fetchBaseOptions,
     );
-}
 
-export function newMintString(userName, tokenId, nftName) {
-    return `${userName} just minted #${tokenId} for ${nftName} https://${networkStrings.opensea}opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId}`;
+export function newMintString(userName, tokenId, nftName, contractAddress) {
+    return `${userName} just minted #${tokenId} for ${nftName} https://${networkStrings.opensea}opensea.io/assets/${contractAddress}/${tokenId}`;
 }

@@ -47,8 +47,9 @@ const contracts = [
 ];
 
 // eslint-disable-next-line no-unused-vars
-for (const contract in contracts) {
-    const { nftName, contractAddress, webhookURL } = contract;
+for (const contractData of contracts) {
+    const { nftName, contractAddress, webhookURL } = contractData;
+
     const { status, result: contractAbi } = await getContractAbi(contractAddress);
 
     if (status !== '1') {
@@ -110,7 +111,7 @@ for (const contract in contracts) {
                 }
 
                 try {
-                    await slack(newMintString(userName, tokenId, nftName));
+                    await slack(newMintString(userName, tokenId, nftName, contractAddress));
                 } catch (error) {
                     console.error(`unkown error ${nftName}: ${error.name} ${error.message}`);
                 }
