@@ -86,7 +86,7 @@ export class FetcherError extends Error {
     }
 }
 
-function sleep(ms) {
+export function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 export async function fetcher(url, options) {
@@ -103,9 +103,10 @@ export async function fetcher(url, options) {
                 bodySent: options.body ? JSON.parse(options.body) : null,
                 message: await response.text(),
             };
-            console.log(error); // TODO logflare and slack?
             retry--;
+            console.log(`retrying, ${retry} retries left`);
             if (retry === 0) {
+                console.log(error); // TODO logflare and slack?
                 throw new FetcherError(error);
             }
             await sleep(2000);

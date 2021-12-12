@@ -96,17 +96,22 @@ for (const contractData of contracts) {
                     `${minterAddress} with   tokenId ${tokenId} has been added or updated for ${nftName}`,
                 );
 
-                try {
-                    const { permalink } = await fetcher(
-                        openseaForceUpdateURL(tokenId, contractAddress),
-                        fetchBaseOptions,
-                    );
-                    console.log(permalink);
-                } catch (error) {
-                    if (error instanceof FetcherError) {
-                        await slack(`Metadata force update failed: ${error.url}`);
-                    } else {
-                        console.error(`unkown error ${nftName}: ${error.name} ${error.message}`);
+                // opensea force update happens in the queued job for Token Garden
+                if (nftName === 'BirthBlock') {
+                    try {
+                        const { permalink } = await fetcher(
+                            openseaForceUpdateURL(tokenId, contractAddress),
+                            fetchBaseOptions,
+                        );
+                        console.log(permalink);
+                    } catch (error) {
+                        if (error instanceof FetcherError) {
+                            await slack(`Metadata force update failed: ${error.url}`);
+                        } else {
+                            console.error(
+                                `unkown error ${nftName}: ${error.name} ${error.message}`,
+                            );
+                        }
                     }
                 }
 
