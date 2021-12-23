@@ -1,10 +1,4 @@
-import {
-    webhookOptions,
-    TOKEN_GARDEN_WEBHOOK_URL,
-    TOKEN_GARDEN_CONTRACT_ADDRESS,
-    fetcher,
-    fetchBaseOptions,
-} from '../utils/index.mjs';
+import { webhookOptions, TOKEN_GARDEN_WEBHOOK_URL, fetcher } from '../utils/index.mjs';
 import fs from 'fs';
 
 async function main() {
@@ -26,12 +20,6 @@ async function main() {
                 console.log(
                     `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
                 );
-            }
-
-            const openseaUrl = `https://api.opensea.io/api/v1/asset/${TOKEN_GARDEN_CONTRACT_ADDRESS}/${body.tokenId}/?force_update=true`;
-            const openseaResult = await fetcher(openseaUrl, fetchBaseOptions);
-            if (openseaResult.error) {
-                console.error(result.error);
             }
         }
     }

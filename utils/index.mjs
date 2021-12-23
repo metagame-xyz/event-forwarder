@@ -8,12 +8,21 @@ export const TOKEN_GARDEN_WEBHOOK_URL = process.env.TOKEN_GARDEN_WEBHOOK_URL;
 export const TOKEN_GARDEN_CONTRACT_ADDRESS = process.env.TOKEN_GARDEN_CONTRACT_ADDRESS;
 
 export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
+
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
+export const ALCHEMY_NOTIFY_TOKEN = process.env.ALCHEMY_NOTIFY_TOKEN;
+
+// export const ALCHEMY_NOTIFY_WEBHOOK_ID = process.env.ALCHEMY_NOTIFY_WEBHOOK_ID;
+export const ALCHEMY_NOTIFY_WEBHOOK_ID = '154144';
+
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 export const INFURA_ID = process.env.INFURA_ID;
 export const NETWORK = process.env.NETWORK.toLowerCase();
 export const SLACK_API_TOKEN = process.env.SLACK_API_TOKEN;
 export const blackholeAddress = '0x0000000000000000000000000000000000000000';
+
+export const alchemyUpdateWebhookAddressesURL =
+    'https://dashboard.alchemyapi.io/api/update-webhook-addresses';
 
 export const conversationId = 'C02M123F48N'; // The-Metagame #mints channel
 
@@ -32,6 +41,16 @@ export const fetchBaseOptions = {
     },
 };
 
+export const notifyOptions = (body) => ({
+    ...fetchBaseOptions,
+    method: 'PATCH',
+    body: JSON.stringify(body),
+    headers: {
+        'X-Alchemy-Token': ALCHEMY_NOTIFY_TOKEN,
+        'Content-Type': 'application/json; charset=UTF-8',
+    },
+});
+
 export const webhookOptions = (body) => ({
     ...fetchBaseOptions,
     method: 'post',
@@ -40,6 +59,12 @@ export const webhookOptions = (body) => ({
         'content-type': 'application/json',
         'x-event-forwarder-signature': signMessage(body),
     },
+});
+
+export const AddAddressToTokenGardenListener = (addressToAdd) => ({
+    webhook_id: ALCHEMY_NOTIFY_WEBHOOK_ID,
+    addresses_to_add: [addressToAdd],
+    addresses_to_remove: [],
 });
 
 function getNetworkString(network) {
@@ -89,8 +114,7 @@ export class FetcherError extends Error {
 export function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export async function fetcher(url, options) {
-    let retry = 3;
+export async function fetcher(url, options, retry = 3) {
     while (retry > 0) {
         const response = await fetch(url, options);
         if (response.ok) {

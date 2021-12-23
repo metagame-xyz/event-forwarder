@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
 import { WebClient } from '@slack/web-api';
 
@@ -18,6 +19,9 @@ import {
     BIRTHBLOCK_WEBHOOK_URL,
     TOKEN_GARDEN_CONTRACT_ADDRESS,
     TOKEN_GARDEN_WEBHOOK_URL,
+    alchemyUpdateWebhookAddressesURL,
+    notifyOptions,
+    AddAddressToTokenGardenListener,
 } from './utils/index.mjs';
 
 const web3 = createAlchemyWeb3(
@@ -60,7 +64,7 @@ for (const contractData of contracts) {
     const contract = new web3.eth.Contract(JSON.parse(contractAbi), contractAddress);
 
     console.log(
-        `listening on https://${networkStrings.etherscan}etherscan.io/address/${contractAddress}`,
+        `listening on https://${networkStrings.etherscan}etherscan.io/address/${contractAddress} : ${webhookURL}`,
     );
 
     contract.events
@@ -85,6 +89,21 @@ for (const contractData of contracts) {
                     // do nothing - FetcherError gets logged by fetcher
                 } else {
                     console.error(`unkown error ${nftName}: ${error.name} ${error.message}`);
+                }
+            }
+
+            if (nftName === 'Token Garden') {
+                let alchemyData = 'ok so its nothing?';
+                try {
+                    alchemyData = await fetcher(
+                        alchemyUpdateWebhookAddressesURL,
+                        notifyOptions(AddAddressToTokenGardenListener(body.minterAddress)),
+                    );
+                } catch (error) {
+                    console.log(
+                        `Alchemy notify error: ${body.minterAddress} for token id ${body.tokenId}`,
+                    );
+                    console.log(error);
                 }
             }
 

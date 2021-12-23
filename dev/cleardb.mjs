@@ -3,9 +3,9 @@ import { createHmac } from 'crypto';
 const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
 
 // const ENV_TLD = process.env.ENV_URL;
-const ENV_TLD = 'www.dev.birthblock.art';
+const ENV_TLD = 'tokengarden.loca.lt';
 
-const clearDbURL = `https://${ENV_TLD}/api/v1/dev/clearDB`;
+const clearDbURL = `https://${ENV_TLD}/api/v1/dev/safe/clearDB`;
 
 async function main() {
     const fetchBaseOptions = {
@@ -46,9 +46,7 @@ async function main() {
     if (result.error) {
         console.error(result.error);
     } else {
-        console.log(
-            `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
-        );
+        console.log(`${result}`);
     }
 }
 
