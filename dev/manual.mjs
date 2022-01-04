@@ -1,15 +1,22 @@
-import {
-    webhookOptions,
-    BIRTHBLOCK_WEBHOOK_URL,
-    CONTRACT_ADDRESS,
-    fetcher,
-    fetchBaseOptions,
-} from '../utils/index.mjs';
+import { webhookOptions, fetcher } from '../utils/index.mjs';
 
-// const minterAddress = '0x001cF1FAa42b18021c90A29e622e83fffE2Be6ce';
-// const tokenId = 341;
+// const minterAddress = '0xE7b25a8aB435C4f8a0d056EdDA7ba450A9999285';
+// const tokenId = 901;
 
-const tuples = [['0x43cb03e0f573f1779b2f288be9198dd2681c55e1', 442]];
+// const minterAddress = '0x5e349eca2dc61aBCd9dD99Ce94d04136151a09Ee';
+// const tokenId = 912;
+
+// const minterAddress = '0xd770383C8401dCAEe72829c4202477C6Cb917aE9';
+// const tokenId = 940;
+
+// const minterAddress = '0xFb6cf36C7C765E3Ff96e83463b26C9781D2Fdd2d';
+// const tokenId = 995;
+
+const minterAddress = '0xF1a9F5AEb0F975489aC2628A22040Cf42E9fE8DD';
+const tokenId = 22;
+
+const local = 'https://tokengarden.loca.lt/api/v1/newTransaction';
+const dev = 'https://dev.tokengarden.art/api/v1/newTransaction';
 
 async function main() {
     async function runOnce() {
@@ -20,47 +27,24 @@ async function main() {
 
         console.log('body', body);
 
-        const result = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body));
+        await fetcher(local, webhookOptions(body), 1);
+        // const result = await fetcher(
+        //     'https://tokengarden.loca.lt/api/v1/dev/safe/timerTest',
+        //     webhookOptions(body),
+        // );
 
-        if (result.error) {
-            console.error(result.message);
-            console.error(result.error);
-        } else {
-            // console.log('result', result);
-            console.log(
-                `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
-            );
-        }
+        // if (result.error) {
+        //     console.error(result.message);
+        //     console.error(result.error);
+        // } else {
+        //     // console.log('result', result);
+        //     console.log(
+        //         `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
+        //     );
+        // }
     }
 
-    async function runLoop() {
-        for (let i = 0; i < tuples.length; i++) {
-            const body = {
-                minterAddress: tuples[i][0],
-                tokenId: tuples[i][1],
-            };
-
-            const result = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body));
-
-            if (result.error) {
-                console.error(result.message);
-                console.error(result.error);
-            } else {
-                console.log(
-                    `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
-                );
-            }
-
-            const openseaUrl = `https://api.opensea.io/api/v1/asset/${CONTRACT_ADDRESS}/${body.tokenId}/?force_update=true`;
-            const openseaResult = await fetcher(openseaUrl, fetchBaseOptions);
-            if (openseaResult.error) {
-                console.error(result.error);
-            }
-        }
-    }
-
-    // await runOnce();
-    await runLoop();
+    await runOnce();
 }
 
 main()

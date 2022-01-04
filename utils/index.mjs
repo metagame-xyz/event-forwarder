@@ -2,14 +2,26 @@ import { createHmac } from 'crypto';
 import fetch from 'node-fetch-retry';
 
 export const BIRTHBLOCK_WEBHOOK_URL = process.env.BIRTHBLOCK_WEBHOOK_URL;
+export const BIRTHBLOCK_CONTRACT_ADDRESS = process.env.BIRTHBLOCK_CONTRACT_ADDRESS;
+
+export const TOKEN_GARDEN_WEBHOOK_URL = process.env.TOKEN_GARDEN_WEBHOOK_URL;
+export const TOKEN_GARDEN_CONTRACT_ADDRESS = process.env.TOKEN_GARDEN_CONTRACT_ADDRESS;
+
 export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
+
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
-export const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+export const ALCHEMY_NOTIFY_TOKEN = process.env.ALCHEMY_NOTIFY_TOKEN;
+
+export const ALCHEMY_NOTIFY_WEBHOOK_ID = process.env.ALCHEMY_NOTIFY_WEBHOOK_ID;
+
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 export const INFURA_ID = process.env.INFURA_ID;
 export const NETWORK = process.env.NETWORK.toLowerCase();
 export const SLACK_API_TOKEN = process.env.SLACK_API_TOKEN;
 export const blackholeAddress = '0x0000000000000000000000000000000000000000';
+
+export const alchemyUpdateWebhookAddressesURL =
+    'https://dashboard.alchemyapi.io/api/update-webhook-addresses';
 
 export const conversationId = 'C02M123F48N'; // The-Metagame #mints channel
 
@@ -28,6 +40,16 @@ export const fetchBaseOptions = {
     },
 };
 
+export const notifyOptions = (body) => ({
+    ...fetchBaseOptions,
+    method: 'PATCH',
+    body: JSON.stringify(body),
+    headers: {
+        'X-Alchemy-Token': ALCHEMY_NOTIFY_TOKEN,
+        'Content-Type': 'application/json; charset=UTF-8',
+    },
+});
+
 export const webhookOptions = (body) => ({
     ...fetchBaseOptions,
     method: 'post',
@@ -36,6 +58,12 @@ export const webhookOptions = (body) => ({
         'content-type': 'application/json',
         'x-event-forwarder-signature': signMessage(body),
     },
+});
+
+export const AddAddressToTokenGardenListener = (addressToAdd) => ({
+    webhook_id: ALCHEMY_NOTIFY_WEBHOOK_ID,
+    addresses_to_add: [addressToAdd],
+    addresses_to_remove: [],
 });
 
 function getNetworkString(network) {
@@ -82,12 +110,12 @@ export class FetcherError extends Error {
     }
 }
 
-function sleep(ms) {
+export function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export async function fetcher(url, options) {
-    let retry = 3;
-    while (retry > 0) {
+export async function fetcher(url, options, maxRetries = 3) {
+    let retries = 0;
+    while (maxRetries > retries) {
         const response = await fetch(url, options);
         if (response.ok) {
             return response.json();
@@ -99,16 +127,27 @@ export async function fetcher(url, options) {
                 bodySent: options.body ? JSON.parse(options.body) : null,
                 message: await response.text(),
             };
-            console.log(error); // TODO logflare and slack?
-            retry--;
-            if (retry === 0) {
+            retries++;
+            console.log(`retrying, ${maxRetries - retries} retries left`);
+            if (maxRetries === retries) {
+                console.log(error); // TODO logflare and slack?
                 throw new FetcherError(error);
             }
-            await sleep(2000);
+            await sleep(1000 * 2 ** retries);
         }
     }
 }
 
-export function openseaForceUpdateURL(tokenId) {
-    return `https://${networkStrings.openseaAPI}opensea.io/api/v1/asset/${CONTRACT_ADDRESS}/${tokenId}/?force_update=true`;
+export function openseaForceUpdateURL(tokenId, contractAddress) {
+    return `https://${networkStrings.openseaAPI}opensea.io/api/v1/asset/${contractAddress}/${tokenId}/?force_update=true`;
+}
+
+export const getContractAbi = async (contractAddress) =>
+    await fetcher(
+        `https://${networkStrings.etherscanAPI}etherscan.io/api?module=contract&action=getabi&address=${contractAddress}&apikey=${ETHERSCAN_API_KEY}`,
+        fetchBaseOptions,
+    );
+
+export function newMintString(userName, tokenId, nftName, contractAddress) {
+    return `${userName} just minted #${tokenId} for ${nftName} https://${networkStrings.opensea}opensea.io/assets/${contractAddress}/${tokenId}`;
 }
