@@ -12,8 +12,7 @@ export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
 export const ALCHEMY_NOTIFY_TOKEN = process.env.ALCHEMY_NOTIFY_TOKEN;
 
-// export const ALCHEMY_NOTIFY_WEBHOOK_ID = process.env.ALCHEMY_NOTIFY_WEBHOOK_ID;
-export const ALCHEMY_NOTIFY_WEBHOOK_ID = '154144';
+export const ALCHEMY_NOTIFY_WEBHOOK_ID = process.env.ALCHEMY_NOTIFY_WEBHOOK_ID;
 
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 export const INFURA_ID = process.env.INFURA_ID;
@@ -114,8 +113,9 @@ export class FetcherError extends Error {
 export function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export async function fetcher(url, options, retry = 3) {
-    while (retry > 0) {
+export async function fetcher(url, options, maxRetries = 3) {
+    let retries = 0;
+    while (maxRetries > retries) {
         const response = await fetch(url, options);
         if (response.ok) {
             return response.json();
@@ -127,13 +127,13 @@ export async function fetcher(url, options, retry = 3) {
                 bodySent: options.body ? JSON.parse(options.body) : null,
                 message: await response.text(),
             };
-            retry--;
-            console.log(`retrying, ${retry} retries left`);
-            if (retry === 0) {
+            retries++;
+            console.log(`retrying, ${maxRetries - retries} retries left`);
+            if (maxRetries === retries) {
                 console.log(error); // TODO logflare and slack?
                 throw new FetcherError(error);
             }
-            await sleep(2000);
+            await sleep(1000 * 2 ** retries);
         }
     }
 }

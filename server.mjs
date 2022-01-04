@@ -121,6 +121,7 @@ for (const contractData of contracts) {
                         const { permalink } = await fetcher(
                             openseaForceUpdateURL(tokenId, contractAddress),
                             fetchBaseOptions,
+                            4, // max retries, 16s
                         );
                         console.log(permalink);
                     } catch (error) {

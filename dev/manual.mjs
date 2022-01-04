@@ -1,19 +1,22 @@
 import { webhookOptions, fetcher } from '../utils/index.mjs';
 
 // const minterAddress = '0xE7b25a8aB435C4f8a0d056EdDA7ba450A9999285';
-// const tokenId = 1;
+// const tokenId = 901;
 
 // const minterAddress = '0x5e349eca2dc61aBCd9dD99Ce94d04136151a09Ee';
-// const tokenId = 12;
+// const tokenId = 912;
 
 // const minterAddress = '0xd770383C8401dCAEe72829c4202477C6Cb917aE9';
-// const tokenId = 40;
+// const tokenId = 940;
 
 // const minterAddress = '0xFb6cf36C7C765E3Ff96e83463b26C9781D2Fdd2d';
-// const tokenId = 91;
+// const tokenId = 995;
 
 const minterAddress = '0xF1a9F5AEb0F975489aC2628A22040Cf42E9fE8DD';
-const tokenId = 148;
+const tokenId = 22;
+
+const local = 'https://tokengarden.loca.lt/api/v1/newTransaction';
+const dev = 'https://dev.tokengarden.art/api/v1/newTransaction';
 
 async function main() {
     async function runOnce() {
@@ -24,11 +27,7 @@ async function main() {
 
         console.log('body', body);
 
-        await fetcher(
-            'https://tokengarden.loca.lt/api/v1/dev/safe/timerTest',
-            webhookOptions(body),
-            1,
-        );
+        await fetcher(local, webhookOptions(body), 1);
         // const result = await fetcher(
         //     'https://tokengarden.loca.lt/api/v1/dev/safe/timerTest',
         //     webhookOptions(body),
