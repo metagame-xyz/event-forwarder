@@ -7,7 +7,7 @@ import {
     fetcher,
     fetchBaseOptions,
     SLACK_API_TOKEN,
-    conversationId,
+    channelId,
     openseaForceUpdateURL,
     FetcherError,
     networkStrings,
@@ -36,7 +36,7 @@ const slackClient = new WebClient(SLACK_API_TOKEN);
 
 async function slack(text) {
     return await slackClient.chat.postMessage({
-        channel: conversationId,
+        channel: channelId,
         text,
     });
 }
