@@ -22,6 +22,8 @@ import {
     alchemyUpdateWebhookAddressesURL,
     notifyOptions,
     AddAddressToTokenGardenListener,
+    HEARTBEAT_CONTRACT_ADDRESS,
+    HEARTBEAT_WEBHOOK_URL,
 } from './utils/index.mjs';
 
 const web3 = createAlchemyWeb3(
@@ -48,6 +50,11 @@ const contracts = [
         contractAddress: TOKEN_GARDEN_CONTRACT_ADDRESS,
         webhookURL: TOKEN_GARDEN_WEBHOOK_URL,
     },
+    {
+        nftName: 'Heartbeat',
+        contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
+        webhookURL: HEARTBEAT_WEBHOOK_URL
+    }
 ];
 
 // eslint-disable-next-line no-unused-vars

@@ -1,4 +1,4 @@
-import { webhookOptions, TOKEN_GARDEN_WEBHOOK_URL, fetcher, sleep } from '../utils/index.mjs';
+import { webhookOptions, HEARTBEAT_WEBHOOK_URL, fetcher, sleep } from '../utils/index.mjs';
 import fs from 'fs';
 
 // const minterAddress = '0x001cF1FAa42b18021c90A29e622e83fffE2Be6ce';
@@ -9,7 +9,7 @@ async function main() {
 
     async function runLoop() {
         const tuples = Object.entries(addresses);
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 1; i++) {
             const [tokenId, minterAddress] = tuples[i];
 
             const body = {
@@ -19,7 +19,7 @@ async function main() {
 
             console.log(body);
 
-            const result = await fetcher(TOKEN_GARDEN_WEBHOOK_URL, webhookOptions(body));
+            const { result } = await fetcher(HEARTBEAT_WEBHOOK_URL, webhookOptions(body));
 
             if (result.error) {
                 console.error(result.message);
@@ -29,7 +29,7 @@ async function main() {
                     `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
                 );
             }
-            // await sleep(1000);
+            await sleep(1000);
         }
     }
 
