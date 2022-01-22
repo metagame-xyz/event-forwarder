@@ -1,18 +1,25 @@
 import { webhookOptions, TOKEN_GARDEN_WEBHOOK_URL, fetcher } from '../utils/index.mjs';
 
-const minterAddress = 'xxx';
-const tokenId = 0;
+const body = {
+    minterAddress: '0x45daafd3dbf3000e9d9f8ee1fb5c7b39ab06b3aa',
+    tokenId: '412',
+    forceScreenshot: true,
+};
+
+// 0x90b56d0e27e74c3c5e66ebfcaf12dc5ecf0665dd
+// 438
 
 async function main() {
     async function runOnce() {
-        const body = {
-            minterAddress,
-            tokenId,
-        };
-
         console.log('body', body);
 
-        const result = await fetcher(TOKEN_GARDEN_WEBHOOK_URL, webhookOptions(body));
+        const { status, message, result } = await fetcher(
+            TOKEN_GARDEN_WEBHOOK_URL,
+            webhookOptions(body),
+        );
+
+        console.log('status:', status);
+        console.log('message:', message);
 
         if (result.error) {
             console.error(result.message);

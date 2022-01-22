@@ -12,11 +12,13 @@ import { webhookOptions, fetcher } from '../utils/index.mjs';
 // const minterAddress = '0xFb6cf36C7C765E3Ff96e83463b26C9781D2Fdd2d';
 // const tokenId = 995;
 
-const minterAddress = '0xF1a9F5AEb0F975489aC2628A22040Cf42E9fE8DD';
-const tokenId = 22;
+const minterAddress = '0x45daafd3dbf3000e9d9f8ee1fb5c7b39ab06b3aa';
+const tokenId = 4;
 
-const local = 'https://tokengarden.loca.lt/api/v1/newTransaction';
-const dev = 'https://dev.tokengarden.art/api/v1/newTransaction';
+const local = 'https://heartbeat.loca.lt/api/v1/newTransaction';
+const dev = 'https://heartbeat-dev.themetagame.xyz/api/v1/newTransaction';
+
+const env = local;
 
 async function main() {
     async function runOnce() {
@@ -27,7 +29,7 @@ async function main() {
 
         console.log('body', body);
 
-        await fetcher(local, webhookOptions(body), 1);
+        await fetcher(env, webhookOptions(body), 1);
         // const result = await fetcher(
         //     'https://tokengarden.loca.lt/api/v1/dev/safe/timerTest',
         //     webhookOptions(body),

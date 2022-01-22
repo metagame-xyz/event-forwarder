@@ -1,0 +1,107 @@
+{
+    "name": "brenner.eth's Token Garden",
+    "description": "A garden that's been growning since June 2021. It has 18 flowers so far.",
+    "image": "ipfs://QmX7i66cX4kibjoBJoKRLisfBTRz5DYh47vEfjeEik4WZE",
+    "external_url": "https://www.tokengarden.art/garden/2",
+    "address": "0x17a059b6b0c8af433032d554b0392995155452e6",
+    "uniqueNFTCount": 18,
+    "totalNFTCount": 42,
+    "nfts": {
+        "0x77a679db25d504d83d59b32467545c5a3783c88b": {
+            "tokenSymbol": "ANON",
+            "tokenName": "ANON",
+            "count": 10
+        },
+        "0x5e5c8cab4a16295d6ddaedbd596d506fd440eb97": {
+            "tokenSymbol": "BADDIE",
+            "tokenName": "Baddies",
+            "count": 1
+        },
+        "0x22c1f6050e56d2876009903609a2cc3fef83b415": {
+            "tokenSymbol": "The Proof of Attendance Protocol",
+            "tokenName": "POAP",
+            "count": 1,
+            "special": true
+        },
+        "0x1003fcba76b07bb978b79a71d11e957dcdd54ebd": {
+            "tokenSymbol": "PBP#2066",
+            "tokenName": "PartyBid Punk#2066",
+            "count": 1
+        },
+        "0xcc56775606730c96ea245d9cf3890247f1c57fb1": {
+            "tokenSymbol": "AL",
+            "tokenName": "AbstractLoot",
+            "count": 1
+        },
+        "0x3d3d9cc92dba4559d0f862e34faa33e9967f6534": {
+            "tokenSymbol": "CAPTCHA",
+            "tokenName": "CAPTCHAS",
+            "count": 6
+        },
+        "0x7afe30cb3e53dba6801aa0ea647a0ecea7cbe18d": {
+            "tokenSymbol": "LootRealm",
+            "tokenName": "Realms (for Adventurers)",
+            "count": 2
+        },
+        "0x448f3219cf2a23b0527a7a0158e7264b87f635db": {
+            "tokenSymbol": "NAUT",
+            "tokenName": "The Blitnauts",
+            "count": 1
+        },
+        "0x4b3406a41399c7fd2ba65cbc93697ad9e7ea61e5": {
+            "tokenSymbol": "POETS",
+            "tokenName": "Lost Poets",
+            "count": 2,
+            "special": true
+        },
+        "0x2ba797c234c8fe25847225b11b616bce729b0b53": {
+            "tokenSymbol": "BBLOCK",
+            "tokenName": "Birthblock",
+            "count": 1,
+            "special": true
+        },
+        "0x5bdf397bb2912859dbd8011f320a222f79a28d2e": {
+            "tokenSymbol": "CORRUPT",
+            "tokenName": "Corruptions",
+            "count": 3
+        },
+        "0x45d1f656ca86fc0bf1bacdf4e2fee9def47e0466": {
+            "tokenSymbol": "NFK",
+            "tokenName": "Nifkey",
+            "count": 1
+        },
+        "0xb228d7b6e099618ca71bd5522b3a8c3788a8f172": {
+            "tokenSymbol": "POOLEXEC",
+            "tokenName": "Poolsuite - Executive Member",
+            "count": 1
+        },
+        "0x9ef14cc7c558a70fbb6480ce58042feebaa1972e": {
+            "tokenSymbol": "BLANK",
+            "tokenName": "BlankArt",
+            "count": 5,
+            "special": true
+        },
+        "0x0beed7099af7514ccedf642cfea435731176fb02": {
+            "tokenSymbol": "DUSK",
+            "tokenName": "DuskBreakers",
+            "count": 3
+        },
+        "0xca21d4228cdcc68d4e23807e5e370c07577dd152": {
+            "tokenSymbol": "ZORB",
+            "tokenName": "Zorbs",
+            "count": 1,
+            "special": true
+        },
+        "0x7d414bc0482432d2d74021095256aab2e6d3f6b8": {
+            "tokenSymbol": "TGRDN",
+            "tokenName": "Token Garden",
+            "count": 1
+        },
+        "7.1507999364243615e+47": {
+            "tokenSymbol": "TGRDN",
+            "tokenName": "Token Garden",
+            "count": 1,
+            "special": true
+        }
+    }
+}

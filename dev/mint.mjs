@@ -6,15 +6,18 @@ import { getTokenGardenContract } from '../utils/dev.mjs';
 async function main() {
     // const addresses = JSON.parse(fs.readFileSync('./output/addresses.json'));
 
-    const contractAddress = TOKEN_GARDEN_CONTRACT_ADDRESS;
+    // const contractAddress = TOKEN_GARDEN_CONTRACT_ADDRESS;
+    // const contractAddress = '0xbc96d12eff9c5d55b31d094ea85d9960088f3bef'; // old token garden
     // const contractAddress = '0xbc96d12EFF9C5D55b31D094EA85d9960088F3beF';
+
+    const contractAddress = '0xbC37a38D7647BEe80d23b296fF61f737C574126E'; // heartbeat rinkeby
 
     async function runLoop() {
         const [tokenGardenContract, getSigner] = getTokenGardenContract('rinkeby', contractAddress);
 
         const promises = [];
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 21; i < 40; i++) {
             console.log(`submitting tx ${i} for ${contractAddress}`);
             const tokenGardenContractWritable = tokenGardenContract.connect(getSigner(i));
             const value = 0;

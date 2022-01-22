@@ -7,6 +7,9 @@ export const BIRTHBLOCK_CONTRACT_ADDRESS = process.env.BIRTHBLOCK_CONTRACT_ADDRE
 export const TOKEN_GARDEN_WEBHOOK_URL = process.env.TOKEN_GARDEN_WEBHOOK_URL;
 export const TOKEN_GARDEN_CONTRACT_ADDRESS = process.env.TOKEN_GARDEN_CONTRACT_ADDRESS;
 
+export const HEARTBEAT_WEBHOOK_URL = process.env.HEARTBEAT_WEBHOOK_URL;
+export const HEARTBEAT_CONTRACT_ADDRESS = process.env.HEARTBEAT_CONTRACT_ADDRESS;
+
 export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
 
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
@@ -15,6 +18,10 @@ export const ALCHEMY_NOTIFY_TOKEN = process.env.ALCHEMY_NOTIFY_TOKEN;
 export const ALCHEMY_NOTIFY_WEBHOOK_ID = process.env.ALCHEMY_NOTIFY_WEBHOOK_ID;
 
 export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+export const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
+
+export const DATADOG_API_KEY = process.env.DATADOG_API_KEY;
+
 export const INFURA_ID = process.env.INFURA_ID;
 export const NETWORK = process.env.NETWORK.toLowerCase();
 export const SLACK_API_TOKEN = process.env.SLACK_API_TOKEN;
@@ -59,6 +66,13 @@ export const webhookOptions = (body) => ({
         'x-event-forwarder-signature': signMessage(body),
     },
 });
+
+export const openseaFetchOptions = {
+    ...fetchBaseOptions,
+    headers: {
+        'X-API-KEY': OPENSEA_API_KEY,
+    },
+};
 
 export const AddAddressToTokenGardenListener = (addressToAdd) => ({
     webhook_id: ALCHEMY_NOTIFY_WEBHOOK_ID,
