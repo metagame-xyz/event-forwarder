@@ -1,8 +1,6 @@
 import DatadogWinston from 'datadog-winston';
 import winston, { format } from 'winston';
 
-import { DATADOG_API_KEY } from './index.mjs';
-
 const { combine, printf, colorize } = format;
 
 const colors = {
@@ -29,7 +27,7 @@ const service =
         : 'event-forwarder-dev-logger';
 
 const datadogTransport = new DatadogWinston({
-    apiKey: DATADOG_API_KEY,
+    apiKey: process.env.DATADOG_API_KEY,
     hostname: 'railway',
     service,
     ddsource: 'nodejs',

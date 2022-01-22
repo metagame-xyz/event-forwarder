@@ -17,8 +17,8 @@ async function main() {
 
         const promises = [];
 
-        for (let i = 21; i < 40; i++) {
-            console.log(`submitting tx ${i} for ${contractAddress}`);
+        for (let i = 0; i < 10; i++) {
+            console.log(`submitting tx ${i} for ${contractAddress} from ${getSigner(i).address}`);
             const tokenGardenContractWritable = tokenGardenContract.connect(getSigner(i));
             const value = 0;
             const promise = tokenGardenContractWritable.mint({ value });
