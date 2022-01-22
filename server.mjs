@@ -26,6 +26,8 @@ import {
     HEARTBEAT_WEBHOOK_URL,
 } from './utils/index.mjs';
 
+import { logError, logSuccess } from './utils/logging.mjs';
+
 const web3 = createAlchemyWeb3(
     `wss://${networkStrings.alchemy}alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
 );
@@ -53,8 +55,8 @@ const contracts = [
     {
         nftName: 'Heartbeat',
         contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
-        webhookURL: HEARTBEAT_WEBHOOK_URL
-    }
+        webhookURL: HEARTBEAT_WEBHOOK_URL,
+    },
 ];
 
 // eslint-disable-next-line no-unused-vars
@@ -70,7 +72,14 @@ for (const contractData of contracts) {
 
     const contract = new web3.eth.Contract(JSON.parse(contractAbi), contractAddress);
 
-    console.log(
+    const logData = {
+        level: 'info',
+        function_name: `setUpListenerFor${nftName}`,
+        contract_address: contractAddress,
+    };
+
+    logSuccess(
+        logData,
         `listening on https://${networkStrings.etherscan}etherscan.io/address/${contractAddress} : ${webhookURL}`,
     );
 
@@ -84,73 +93,57 @@ for (const contractData of contracts) {
                 tokenId: event.returnValues[2],
             };
 
-            console.log(`${body.minterAddress} minted tokenId ${body.tokenId} for ${nftName}`);
+            const logData = {
+                level: 'info',
+                function_name: `${nftName}Mint`,
+                nft_name: nftName,
+                contract_address: contractAddress,
+                wallet_address: body.minterAddress,
+                token_id: body.tokenId,
+            };
+
+            const message = `${body.minterAddress} minted tokenId ${body.tokenId} for ${nftName}`;
+            logSuccess(logData, message);
 
             let status, result; // could also pull out 'message'
 
             /* Send data to service */
             try {
                 ({ status, result } = await fetcher(webhookURL, webhookOptions(body)));
-            } catch (error) {
-                if (error instanceof FetcherError) {
-                    // do nothing - FetcherError gets logged by fetcher
-                } else {
-                    console.error(`unkown error ${nftName}: ${error.name} ${error.message}`);
-                }
-            }
+                if (nftName === 'Token Garden') {
+                    let alchemyData = 'ok so its nothing?';
 
-            if (nftName === 'Token Garden') {
-                let alchemyData = 'ok so its nothing?';
-                try {
                     alchemyData = await fetcher(
                         alchemyUpdateWebhookAddressesURL,
                         notifyOptions(AddAddressToTokenGardenListener(body.minterAddress)),
                     );
-                } catch (error) {
-                    console.log(
-                        `Alchemy notify error: ${body.minterAddress} for token id ${body.tokenId}`,
-                    );
-                    console.log(error);
                 }
-            }
+                /* If no error from service, force update Opensea and send Slack message */
+                if (status == 1) {
+                    const { minterAddress, tokenId, ensName } = result;
+                    const userName = ensName || minterAddress.substr(0, 6);
+                    console.log(
+                        `${minterAddress} with   tokenId ${tokenId} has been added or updated for ${nftName}`,
+                    );
 
-            /* If no error from service, force update Opensea and send Slack message */
-            if (status == 1) {
-                const { minterAddress, tokenId, ensName } = result;
-                const userName = ensName || minterAddress.substr(0, 6);
-                console.log(
-                    `${minterAddress} with   tokenId ${tokenId} has been added or updated for ${nftName}`,
-                );
+                    await slack(newMintString(userName, tokenId, nftName, contractAddress));
 
-                // opensea force update happens in the queued job for Token Garden
-                if (nftName === 'BirthBlock') {
-                    try {
+                    // opensea force update happens in the queued job for Token Garden & Heartbeat
+                    if (nftName === 'BirthBlock') {
                         const { permalink } = await fetcher(
                             openseaForceUpdateURL(tokenId, contractAddress),
                             fetchBaseOptions,
                             4, // max retries, 16s
                         );
                         console.log(permalink);
-                    } catch (error) {
-                        if (error instanceof FetcherError) {
-                            await slack(`Metadata force update failed: ${error.url}`);
-                        } else {
-                            console.error(
-                                `unkown error ${nftName}: ${error.name} ${error.message}`,
-                            );
-                        }
                     }
                 }
-
-                try {
-                    await slack(newMintString(userName, tokenId, nftName, contractAddress));
-                } catch (error) {
-                    console.error(`unkown error ${nftName}: ${error.name} ${error.message}`);
-                }
+            } catch (error) {
+                logError(logData, error);
             }
         })
         .on('error', (error) => {
-            console.log('error:', error);
+            logError(logData, error);
         })
         .on('end', () => console.log('connectnion ended'));
 }

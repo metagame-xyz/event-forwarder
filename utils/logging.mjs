@@ -33,7 +33,7 @@ const datadogTransport = new DatadogWinston({
     hostname: 'railway',
     service,
     ddsource: 'nodejs',
-    ddtags: `env:${process.env.VERCEL_ENV}, git_sha:${process.env.VERCEL_GIT_COMMIT_SHA}, git_ref:${process.env.VERCEL_GIT_COMMIT_REF}`,
+    ddtags: `env:${process.env.RAILWAY_ENV}, git_sha:${process.env.RAILWAY_GIT_COMMIT_SHA}, git_ref:${process.env.RAILWAY_GIT_BRANCH}`,
 });
 
 const prodTransports = [datadogTransport];
