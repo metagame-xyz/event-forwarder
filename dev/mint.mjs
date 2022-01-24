@@ -17,7 +17,9 @@ async function main() {
 
         const promises = [];
 
-        for (let i = 0; i < 10; i++) {
+        // only wallets 0-9 have eth in them
+
+        for (let i = 0; i < 2; i++) {
             console.log(`submitting tx ${i} for ${contractAddress} from ${getSigner(i).address}`);
             const tokenGardenContractWritable = tokenGardenContract.connect(getSigner(i));
             const value = 0;
