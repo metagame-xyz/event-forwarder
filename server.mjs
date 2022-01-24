@@ -52,11 +52,11 @@ const contracts = [
         contractAddress: TOKEN_GARDEN_CONTRACT_ADDRESS,
         webhookURL: TOKEN_GARDEN_WEBHOOK_URL,
     },
-    {
-        nftName: 'Heartbeat',
-        contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
-        webhookURL: HEARTBEAT_WEBHOOK_URL,
-    },
+    // {
+    //     nftName: 'Heartbeat',
+    //     contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
+    //     webhookURL: HEARTBEAT_WEBHOOK_URL,
+    // },
 ];
 
 // eslint-disable-next-line no-unused-vars
