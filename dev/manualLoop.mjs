@@ -9,7 +9,7 @@ async function main() {
 
     async function runLoop() {
         const tuples = Object.entries(addresses);
-        for (let i = 0; i < 1; i++) {
+        for (let i = 29; i < 40; i++) {
             const [tokenId, minterAddress] = tuples[i];
 
             const body = {

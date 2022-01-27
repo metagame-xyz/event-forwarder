@@ -19,24 +19,31 @@ async function main() {
 
         // only wallets 0-9 have eth in them
 
-        for (let i = 0; i < 2; i++) {
-            console.log(`submitting tx ${i} for ${contractAddress} from ${getSigner(i).address}`);
+        for (let i = 0; i < 9; i++) {
+            console.log(`submitting tx ${i} for ${contractAddress} from ${getSigner(0).address}`);
             const tokenGardenContractWritable = tokenGardenContract.connect(getSigner(i));
             const value = 0;
-            const promise = tokenGardenContractWritable.mint({ value });
-            promises.push(promise);
+            const promise = await tokenGardenContractWritable.mint({ value });
+            console.log(`tx ${i} submitted`);
+            // const moreData = await promise.wait();
+            // const [fromAddress, toAddress, tokenId] = moreData.events.find(
+            //     (e) => (e.event = 'Transfer'),
+            // ).args;
+            // console.log(`${fromAddress} -> ${toAddress}: ${tokenId}`);
         }
-
-        const dataArray = await Promise.all(promises);
-
-        for (const data of dataArray) {
-            const moreData = await data.wait();
-            const [fromAddress, toAddress, tokenId] = moreData.events.find(
-                (e) => (e.event = 'Transfer'),
-            ).args;
-            console.log(`${fromAddress} -> ${toAddress}: ${tokenId}`);
-        }
+        // promises.push(promise);
     }
+
+    // const dataArray = await Promise.all(promises);
+
+    // for (const data of dataArray) {
+    //     const moreData = await data.wait();
+    //     const [fromAddress, toAddress, tokenId] = moreData.events.find(
+    //         (e) => (e.event = 'Transfer'),
+    //     ).args;
+    //     console.log(`${fromAddress} -> ${toAddress}: ${tokenId}`);
+    // }
+    // }
 
     await runLoop();
 }
