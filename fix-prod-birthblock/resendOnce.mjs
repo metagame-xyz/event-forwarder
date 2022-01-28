@@ -6,8 +6,8 @@ import {
     fetchBaseOptions,
 } from '../utils/index.mjs';
 
-const minterAddress = '0xF0f449f4E8D94D0e64de385D7c32a1F61B749DD3';
-const tokenId = 12;
+const minterAddress = '0xdc40cbf86727093c52582405703e5b97d5c64b66';
+const tokenId = 1054;
 
 async function main() {
     async function runOnce() {

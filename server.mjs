@@ -5,7 +5,7 @@ import { WebClient } from '@slack/web-api';
 import {
     webhookOptions,
     fetcher,
-    fetchBaseOptions,
+    openSeaFetchOptions,
     SLACK_API_TOKEN,
     channelId,
     openseaForceUpdateURL,
@@ -132,7 +132,7 @@ for (const contractData of contracts) {
                     if (nftName === 'BirthBlock') {
                         const { permalink } = await fetcher(
                             openseaForceUpdateURL(tokenId, contractAddress),
-                            fetchBaseOptions,
+                            openSeaFetchOptions,
                             4, // max retries, 16s
                         );
                         console.log(permalink);
