@@ -1,8 +1,8 @@
 import { webhookOptions, TOKEN_GARDEN_WEBHOOK_URL, fetcher } from '../utils/index.mjs';
 
 const body = {
-    minterAddress: '0x45daafd3dbf3000e9d9f8ee1fb5c7b39ab06b3aa',
-    tokenId: '412',
+    minterAddress: '0x739aa3133dfa870a6fcc5ff35aeee47dd7028a24',
+    tokenId: '505',
     forceScreenshot: true,
 };
 

@@ -1,13 +1,13 @@
 import {
     webhookOptions,
-    BIRTHBLOCK_WEBHOOK_URL,
-    BIRTHBLOCK_CONTRACT_ADDRESS,
+    HEARTBEAT_WEBHOOK_URL,
+    HEARTBEAT_CONTRACT_ADDRESS,
     fetcher,
     openseaFetchOptions,
 } from '../utils/index.mjs';
 
-const minterAddress = '';
-const tokenId = '82';
+const minterAddress = '0x2d3178af3dfbb679716cc14e245be0a9e5945500';
+const tokenId = 78;
 
 async function main() {
     async function runOnce() {
@@ -18,7 +18,7 @@ async function main() {
 
         console.log('body', body);
 
-        const result = await fetcher(BIRTHBLOCK_WEBHOOK_URL, webhookOptions(body));
+        const result = await fetcher(HEARTBEAT_WEBHOOK_URL, webhookOptions(body));
 
         if (result.error) {
             console.error(result.message);
@@ -30,7 +30,7 @@ async function main() {
             );
         }
 
-        const openseaUrl = `https://api.opensea.io/api/v1/asset/${BIRTHBLOCK_CONTRACT_ADDRESS}/${body.tokenId}/?force_update=true`;
+        const openseaUrl = `https://api.opensea.io/api/v1/asset/${HEARTBEAT_CONTRACT_ADDRESS}/${body.tokenId}/?force_update=true`;
         const openseaResult = await fetcher(openseaUrl, openseaFetchOptions);
         if (openseaResult.error) {
             console.error(result.error);
