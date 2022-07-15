@@ -24,6 +24,8 @@ import {
     AddAddressToTokenGardenListener,
     HEARTBEAT_CONTRACT_ADDRESS,
     HEARTBEAT_WEBHOOK_URL,
+    LOGBOOK_CONTRACT_ADDRESS,
+    LOGBOOK_WEBHOOK_URL
 } from './utils/index.mjs';
 
 import { logError, logSuccess } from './utils/logging.mjs';
@@ -57,6 +59,11 @@ const contracts = [
         contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
         webhookURL: HEARTBEAT_WEBHOOK_URL,
     },
+    {
+        nftName: 'Logbook',
+        contractAddress: LOGBOOK_CONTRACT_ADDRESS,
+        webhookURL: LOGBOOK_WEBHOOK_URL,
+    }
 ];
 
 // eslint-disable-next-line no-unused-vars
