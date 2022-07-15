@@ -108,7 +108,6 @@ for (const contractData of contracts) {
                 wallet_address: body.minterAddress,
                 token_id: body.tokenId,
             };
-
             const message = `${body.minterAddress} minted tokenId ${body.tokenId} for ${nftName}`;
             logSuccess(logData, message);
 
