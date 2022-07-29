@@ -135,7 +135,7 @@ for (const contractData of contracts) {
                     await slack(newMintString(userName, tokenId, nftName, contractAddress));
 
                     // opensea force update happens in the queued job for Token Garden & Heartbeat
-                    if (nftName === 'BirthBlock') {
+                    if (nftName === 'BirthBlock' || nftName === 'Logbook') {
                         const { permalink } = await fetcher(
                             openseaForceUpdateURL(tokenId, contractAddress),
                             openseaFetchOptions,
