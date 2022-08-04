@@ -132,7 +132,7 @@ for (const contractData of contracts) {
                         `${minterAddress} with   tokenId ${tokenId} has been added or updated for ${nftName}`,
                     );
 
-                    await slack(newMintString(userName, body.tokenId, nftName, contractAddress));
+                    await slack(newMintString(userName, tokenId, nftName, contractAddress));
 
                     // opensea force update happens in the queued job for Token Garden & Heartbeat
                     if (nftName === 'BirthBlock' || nftName === 'Logbook') {
