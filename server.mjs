@@ -24,6 +24,8 @@ import {
     AddAddressToTokenGardenListener,
     HEARTBEAT_CONTRACT_ADDRESS,
     HEARTBEAT_WEBHOOK_URL,
+    LOGBOOK_CONTRACT_ADDRESS,
+    LOGBOOK_WEBHOOK_URL
 } from './utils/index.mjs';
 
 import { logError, logSuccess } from './utils/logging.mjs';
@@ -57,6 +59,11 @@ const contracts = [
         contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
         webhookURL: HEARTBEAT_WEBHOOK_URL,
     },
+    {
+        nftName: 'Logbook',
+        contractAddress: LOGBOOK_CONTRACT_ADDRESS,
+        webhookURL: LOGBOOK_WEBHOOK_URL,
+    }
 ];
 
 // eslint-disable-next-line no-unused-vars
@@ -101,7 +108,6 @@ for (const contractData of contracts) {
                 wallet_address: body.minterAddress,
                 token_id: body.tokenId,
             };
-
             const message = `${body.minterAddress} minted tokenId ${body.tokenId} for ${nftName}`;
             logSuccess(logData, message);
 
@@ -129,7 +135,7 @@ for (const contractData of contracts) {
                     await slack(newMintString(userName, tokenId, nftName, contractAddress));
 
                     // opensea force update happens in the queued job for Token Garden & Heartbeat
-                    if (nftName === 'BirthBlock') {
+                    if (nftName === 'BirthBlock' || nftName === 'Logbook') {
                         const { permalink } = await fetcher(
                             openseaForceUpdateURL(tokenId, contractAddress),
                             openseaFetchOptions,
