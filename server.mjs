@@ -145,7 +145,7 @@ for (const contractData of contracts) {
                     if (
                         nftName === 'BirthBlock' ||
                         nftName === 'Logbook' ||
-                        nftName == 'Nomad whitehat'
+                        nftName === 'Nomad whitehat'
                     ) {
                         const { permalink } = await fetcher(
                             openseaForceUpdateURL(tokenId, contractAddress),
