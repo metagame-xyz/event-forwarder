@@ -17,6 +17,9 @@ export const LOGBOOK_CONTRACT_ADDRESS = process.env.LOGBOOK_CONTRACT_ADDRESS;
 export const NOMAD_WHITEHAT_WEBHOOK_URL = process.env.NOMAD_WHITEHAT_WEBHOOK_URL;
 export const NOMAD_WHITEHAT_CONTRACT_ADDRESS = process.env.NOMAD_WHITEHAT_CONTRACT_ADDRESS;
 
+export const LLAMA_PFP_WEBHOOK_URL = process.env.LLAMA_PFP_WEBHOOK_URL;
+export const LLAMA_PFP_CONTRACT_ADDRESS = process.env.LLAMA_PFP_CONTRACT_ADDRESS;
+
 export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
 
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
@@ -28,7 +31,7 @@ export const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
 export const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY;
 
 export const INFURA_ID = process.env.INFURA_ID;
-export const NETWORK = process.env.NETWORK.toLowerCase();
+export const NETWORK = process.env.NETWORK.toUpperCase();
 export const SLACK_API_TOKEN = process.env.SLACK_API_TOKEN;
 export const blackholeAddress = '0x0000000000000000000000000000000000000000';
 
@@ -105,7 +108,7 @@ function getNetworkString(network) {
                 etherscan: `${network}.`,
                 etherscanAPI: `api-${NETWORK}.`,
                 opensea: 'testnets.',
-                openseaAPI: `${NETWORK}-api.`, // rinkeby only for now
+                openseaAPI: `testnets-api.`,
             };
     }
 }
