@@ -28,6 +28,10 @@ import {
     LOGBOOK_WEBHOOK_URL,
     NOMAD_WHITEHAT_CONTRACT_ADDRESS,
     NOMAD_WHITEHAT_WEBHOOK_URL,
+    LLAMA_PFP_CONTRACT_ADDRESS,
+    LLAMA_PFP_WEBHOOK_URL,
+    sleep,
+    NETWORK,
 } from './utils/index.mjs';
 
 import { logError, logSuccess } from './utils/logging.mjs';
@@ -50,117 +54,142 @@ const contracts = [
         nftName: 'BirthBlock',
         contractAddress: BIRTHBLOCK_CONTRACT_ADDRESS,
         webhookURL: BIRTHBLOCK_WEBHOOK_URL,
+        testNetwork: 'RINKEBY',
     },
     {
         nftName: 'Token Garden',
         contractAddress: TOKEN_GARDEN_CONTRACT_ADDRESS,
         webhookURL: TOKEN_GARDEN_WEBHOOK_URL,
+        testNetwork: 'RINKEBY',
     },
     {
         nftName: 'Heartbeat',
         contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
         webhookURL: HEARTBEAT_WEBHOOK_URL,
+        testNetwork: 'RINKEBY',
     },
     {
         nftName: 'Logbook',
         contractAddress: LOGBOOK_CONTRACT_ADDRESS,
         webhookURL: LOGBOOK_WEBHOOK_URL,
+        testNetwork: 'RINKEBY',
     },
     {
         nftName: 'Nomad whitehat',
         contractAddress: NOMAD_WHITEHAT_CONTRACT_ADDRESS,
         webhookURL: NOMAD_WHITEHAT_WEBHOOK_URL,
+        testNetwork: 'RINKEBY',
+    },
+    {
+        nftName: 'llamaPfp',
+        contractAddress: LLAMA_PFP_CONTRACT_ADDRESS,
+        webhookURL: LLAMA_PFP_WEBHOOK_URL,
+        testNetwork: 'GOERLI',
     },
 ];
 
 // eslint-disable-next-line no-unused-vars
 for (const contractData of contracts) {
-    const { nftName, contractAddress, webhookURL } = contractData;
+    const { nftName, contractAddress, webhookURL, testNetwork } = contractData;
 
-    const { status, result: contractAbi } = await getContractAbi(contractAddress);
+    // sorry Rinkeby you're over
+    if (NETWORK === 'MAINNET' || NETWORK === testNetwork) {
+        let status;
+        let contractAbi;
+        try {
+            ({ status, result: contractAbi } = await getContractAbi(contractAddress));
 
-    if (status !== '1') {
-        console.error(`getContractAbi Error: ${contractAbi}`);
-        process.exit(1);
-    }
+            await sleep(500);
+        } catch (error) {
+            console.log(`contract: ${nftName}`, error);
+            logError(error);
+        }
 
-    const contract = new web3.eth.Contract(JSON.parse(contractAbi), contractAddress);
+        if (status !== '1') {
+            console.error(`getContractAbi Error: ${contractAbi}`);
+            process.exit(1);
+        }
 
-    const logData = {
-        level: 'info',
-        function_name: `setUpListenerFor${nftName}`,
-        contract_address: contractAddress,
-    };
+        const contract = new web3.eth.Contract(JSON.parse(contractAbi), contractAddress);
 
-    logSuccess(
-        logData,
-        `listening on https://${networkStrings.etherscan}etherscan.io/address/${contractAddress} : ${webhookURL}`,
-    );
+        const logData = {
+            level: 'info',
+            function_name: `setUpListenerFor${nftName}`,
+            contract_address: contractAddress,
+        };
 
-    contract.events
-        .Transfer({
-            filter: { from: blackholeAddress },
-        })
-        .on('data', async (event) => {
-            const body = {
-                minterAddress: event.returnValues[1],
-                tokenId: event.returnValues[2],
-            };
+        console.log(
+            `listening on https://${networkStrings.etherscan}etherscan.io/address/${contractAddress} : ${webhookURL}`,
+        );
 
-            const logData = {
-                level: 'info',
-                function_name: `${nftName}Mint`,
-                nft_name: nftName,
-                contract_address: contractAddress,
-                wallet_address: body.minterAddress,
-                token_id: body.tokenId,
-            };
-            const message = `${body.minterAddress} minted tokenId ${body.tokenId} for ${nftName}`;
-            logSuccess(logData, message);
+        logSuccess(
+            logData,
+            `listening on https://${networkStrings.etherscan}etherscan.io/address/${contractAddress} : ${webhookURL}`,
+        );
 
-            let status, result; // could also pull out 'message'
+        contract.events
+            .Transfer({
+                filter: { from: blackholeAddress },
+            })
+            .on('data', async (event) => {
+                const body = {
+                    minterAddress: event.returnValues[1],
+                    tokenId: event.returnValues[2],
+                    contractAddress,
+                    nftName,
+                };
 
-            /* Send data to service */
-            try {
-                ({ status, result } = await fetcher(webhookURL, webhookOptions(body)));
-                if (nftName === 'Token Garden') {
-                    let alchemyData = 'ok so its nothing?';
+                const logData = {
+                    level: 'info',
+                    function_name: `${nftName}Mint`,
+                    nft_name: nftName,
+                    contract_address: contractAddress,
+                    wallet_address: body.minterAddress,
+                    token_id: body.tokenId,
+                };
+                const message = `${body.minterAddress} minted tokenId ${body.tokenId} for ${nftName}`;
+                logSuccess(logData, message);
 
-                    alchemyData = await fetcher(
-                        alchemyUpdateWebhookAddressesURL,
-                        notifyOptions(AddAddressToTokenGardenListener(body.minterAddress)),
-                    );
-                }
-                /* If no error from service, force update Opensea and send Slack message */
-                if (status == 1) {
-                    const { minterAddress, tokenId, ensName } = result;
-                    const userName = ensName || minterAddress.substr(0, 6);
-                    console.log(
-                        `${minterAddress} with   tokenId ${tokenId} has been added or updated for ${nftName}`,
-                    );
+                let status, result; // could also pull out 'message'
 
-                    await slack(newMintString(userName, tokenId, nftName, contractAddress));
+                /* Send data to service */
+                try {
+                    ({ status, result } = await fetcher(webhookURL, webhookOptions(body)));
+                    if (nftName === 'Token Garden') {
+                        let alchemyData = 'ok so its nothing?';
 
-                    // opensea force update happens in the queued job for Token Garden & Heartbeat
-                    if (
-                        nftName === 'BirthBlock' ||
-                        nftName === 'Logbook' ||
-                        nftName === 'Nomad whitehat'
-                    ) {
-                        const { permalink } = await fetcher(
-                            openseaForceUpdateURL(tokenId, contractAddress),
-                            openseaFetchOptions,
-                            4, // max retries, 16s
+                        alchemyData = await fetcher(
+                            alchemyUpdateWebhookAddressesURL,
+                            notifyOptions(AddAddressToTokenGardenListener(body.minterAddress)),
                         );
-                        console.log(permalink);
                     }
+                    /* If no error from service, force update Opensea and send Slack message */
+                    if (status == 1) {
+                        const { minterAddress, tokenId, ensName } = result;
+                        const userName = ensName || minterAddress.substr(0, 6);
+                        console.log(
+                            `${minterAddress} with   tokenId ${tokenId} has been added or updated for ${nftName}`,
+                        );
+
+                        await slack(newMintString(userName, tokenId, nftName, contractAddress));
+
+                        // opensea force update happens in the queued job for Token Garden & Heartbeat
+                        if (nftName !== 'Token Garden' && nftName !== 'Heartbeat') {
+                            const { permalink } = await fetcher(
+                                openseaForceUpdateURL(tokenId, contractAddress),
+                                openseaFetchOptions,
+                                4, // max retries, 16s
+                            );
+                            console.log(permalink);
+                        }
+                    }
+                } catch (error) {
+                    logError(logData, error);
                 }
-            } catch (error) {
+            })
+            .on('error', (error) => {
                 logError(logData, error);
-            }
-        })
-        .on('error', (error) => {
-            logError(logData, error);
-        })
-        .on('end', () => console.log('connectnion ended'));
+            })
+            .on('end', () => console.log('connection ended'));
+    }
 }
