@@ -93,6 +93,8 @@ const contracts = [
 for (const contractData of contracts) {
     const { nftName, contractAddress, webhookURL, testNetwork } = contractData;
 
+    console.log(`Starting ${nftName} listener... network: ${NETWORK}, testNetwork: ${testNetwork}`);
+
     // sorry Rinkeby you're over
     if (NETWORK === networkNames.ethereum || NETWORK === testNetwork) {
         let status;
