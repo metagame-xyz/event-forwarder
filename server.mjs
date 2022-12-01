@@ -32,6 +32,7 @@ import {
     LLAMA_PFP_WEBHOOK_URL,
     sleep,
     NETWORK,
+    networkNames,
 } from './utils/index.mjs';
 
 import { logError, logSuccess } from './utils/logging.mjs';
@@ -54,37 +55,37 @@ const contracts = [
         nftName: 'BirthBlock',
         contractAddress: BIRTHBLOCK_CONTRACT_ADDRESS,
         webhookURL: BIRTHBLOCK_WEBHOOK_URL,
-        testNetwork: 'RINKEBY',
+        testNetwork: networkNames.rinkeby,
     },
     {
         nftName: 'Token Garden',
         contractAddress: TOKEN_GARDEN_CONTRACT_ADDRESS,
         webhookURL: TOKEN_GARDEN_WEBHOOK_URL,
-        testNetwork: 'RINKEBY',
+        testNetwork: networkNames.rinkeby,
     },
     {
         nftName: 'Heartbeat',
         contractAddress: HEARTBEAT_CONTRACT_ADDRESS,
         webhookURL: HEARTBEAT_WEBHOOK_URL,
-        testNetwork: 'RINKEBY',
+        testNetwork: networkNames.rinkeby,
     },
     {
         nftName: 'Logbook',
         contractAddress: LOGBOOK_CONTRACT_ADDRESS,
         webhookURL: LOGBOOK_WEBHOOK_URL,
-        testNetwork: 'RINKEBY',
+        testNetwork: networkNames.rinkeby,
     },
     {
         nftName: 'Nomad whitehat',
         contractAddress: NOMAD_WHITEHAT_CONTRACT_ADDRESS,
         webhookURL: NOMAD_WHITEHAT_WEBHOOK_URL,
-        testNetwork: 'RINKEBY',
+        testNetwork: networkNames.rinkeby,
     },
     {
         nftName: 'llamaPfp',
         contractAddress: LLAMA_PFP_CONTRACT_ADDRESS,
         webhookURL: LLAMA_PFP_WEBHOOK_URL,
-        testNetwork: 'GOERLI',
+        testNetwork: networkNames.goerli,
     },
 ];
 
@@ -93,7 +94,7 @@ for (const contractData of contracts) {
     const { nftName, contractAddress, webhookURL, testNetwork } = contractData;
 
     // sorry Rinkeby you're over
-    if (NETWORK === 'MAINNET' || NETWORK === testNetwork) {
+    if (NETWORK === networkNames.ethereum || NETWORK === testNetwork) {
         let status;
         let contractAbi;
         try {

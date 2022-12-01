@@ -91,7 +91,21 @@ export const AddAddressToTokenGardenListener = (addressToAdd) => ({
     addresses_to_remove: [],
 });
 
+export const networkNames = {
+    ethereum: 'ethereum',
+    goerli: 'goerli',
+    rinkeby: 'rinkeby',
+};
+
 function getNetworkString(network) {
+    const defaultStrings = {
+        alchemy: `eth-${network}.`,
+        etherscan: `${network}.`,
+        etherscanAPI: `api-${NETWORK}.`,
+        opensea: 'testnets.',
+        openseaAPI: `testnets-api.`,
+    };
+
     switch (network) {
         case 'ethereum':
             return {
@@ -100,16 +114,12 @@ function getNetworkString(network) {
                 etherscanAPI: 'api.',
                 opensea: '',
                 openseaAPI: 'api.',
+                network: networkNames.ethereum,
             };
-
+        case 'goerli':
+            return { ...defaultStrings, network: networkNames.goerli };
         default:
-            return {
-                alchemy: `eth-${network}.`,
-                etherscan: `${network}.`,
-                etherscanAPI: `api-${NETWORK}.`,
-                opensea: 'testnets.',
-                openseaAPI: `testnets-api.`,
-            };
+            return defaultStrings;
     }
 }
 
