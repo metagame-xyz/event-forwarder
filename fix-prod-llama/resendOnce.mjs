@@ -6,8 +6,8 @@ import {
     openseaFetchOptions,
 } from '../utils/index.mjs';
 
-const minterAddress = '0x5dc942e89b162631c86361c793f1cc20fb2b15e4';
-const tokenId = '2';
+const minterAddress = '';
+const tokenId = '';
 
 async function main() {
     async function runOnce() {
