@@ -32,6 +32,7 @@ import {
     ROBO_NOVA_WEBHOOK_URL,
     CDMX_AXOLOTLS_CONTRACT_ADDRESS,
     AVATAR_STUDIO_WEBHOOK_URL,
+    VANDERBILT_CONTRACT_ADDRESS,
     sleep,
     NETWORK,
     networkNames,
@@ -97,6 +98,12 @@ const contracts = [
     {
         nftName: 'cdmx-axolotls',
         contractAddress: CDMX_AXOLOTLS_CONTRACT_ADDRESS,
+        webhookURL: AVATAR_STUDIO_WEBHOOK_URL,
+        testNetwork: networkNames.sepolia,
+    },
+    {
+        nftName: 'commodore', // project slug
+        contractAddress: VANDERBILT_CONTRACT_ADDRESS,
         webhookURL: AVATAR_STUDIO_WEBHOOK_URL,
         testNetwork: networkNames.sepolia,
     },
