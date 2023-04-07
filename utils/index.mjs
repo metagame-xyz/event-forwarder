@@ -20,6 +20,14 @@ export const NOMAD_WHITEHAT_CONTRACT_ADDRESS = process.env.NOMAD_WHITEHAT_CONTRA
 export const LLAMA_PFP_WEBHOOK_URL = process.env.LLAMA_PFP_WEBHOOK_URL;
 export const LLAMA_PFP_CONTRACT_ADDRESS = process.env.LLAMA_PFP_CONTRACT_ADDRESS;
 
+export const ROBO_NOVA_WEBHOOK_URL = process.env.ROBO_NOVA_WEBHOOK_URL;
+export const ROBO_NOVA_CONTRACT_ADDRESS = process.env.ROBO_NOVA_CONTRACT_ADDRESS;
+
+export const AVATAR_STUDIO_WEBHOOK_URL = process.env.AVATAR_STUDIO_WEBHOOK_URL;
+export const CDMX_AXOLOTLS_CONTRACT_ADDRESS = process.env.CDMX_AXOLOTLS_CONTRACT_ADDRESS;
+
+export const VANDERBILT_CONTRACT_ADDRESS = process.env.VANDERBILT_CONTRACT_ADDRESS;
+
 export const EVENT_FORWARDER_AUTH_TOKEN = process.env.EVENT_FORWARDER_AUTH_TOKEN;
 
 export const ALCHEMY_API_KEY = process.env.ALCHEMY_API_KEY;
@@ -42,6 +50,7 @@ export const networkNames = {
     ethereum: 'ethereum',
     goerli: 'goerli',
     rinkeby: 'rinkeby',
+    sepolia: 'sepolia',
 };
 
 export const mintsChannelId = 'C02M123F48N'; // The-Metagame #mints channel
@@ -118,10 +127,18 @@ function getNetworkString(network) {
             };
         case 'goerli':
             return { ...defaultStrings, network: networkNames.goerli };
+        case 'sepolia':
+            return { ...defaultStrings, network: networkNames.sepolia };
         default:
             return defaultStrings;
     }
 }
+
+// Hardcoded to SePolia for now
+export const alchemyWebsocketRrcUrl =
+    NETWORK === networkNames.ethereum
+        ? `wss://eth-mainnet.alchemyApi.io/v2/${ALCHEMY_API_KEY}`
+        : `wss://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_API_KEY}`;
 
 export const networkStrings = getNetworkString(NETWORK);
 

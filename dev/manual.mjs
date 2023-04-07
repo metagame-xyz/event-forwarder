@@ -12,11 +12,12 @@ import { webhookOptions, fetcher } from '../utils/index.mjs';
 // const minterAddress = '0xFb6cf36C7C765E3Ff96e83463b26C9781D2Fdd2d';
 // const tokenId = 995;
 
-const minterAddress = '0x45daafd3dbf3000e9d9f8ee1fb5c7b39ab06b3aa';
-const tokenId = 4;
+const minterAddress = '0x9D8395A406FA264DeA71671c772269e844264E8C';
+const tokenId = '1';
+const contractAddress = '0xd65c132e67df9ab1f4c7af49c2409ad93e5facb4';
 
-const local = 'https://heartbeat.loca.lt/api/v1/newTransaction';
-const dev = 'https://heartbeat-dev.themetagame.xyz/api/v1/newTransaction';
+const local = 'https://stale-treefrog-78.loca.lt/api/newMint';
+// const dev = 'https://heartbeat-dev.themetagame.xyz/api/v1/newTransaction';
 
 const env = local;
 
@@ -25,25 +26,27 @@ async function main() {
         const body = {
             minterAddress,
             tokenId,
+            contractAddress,
+            nftName: 'robo-nova',
         };
 
         console.log('body', body);
 
-        await fetcher(env, webhookOptions(body), 1);
+        const data = await fetcher(env, webhookOptions(body), 1);
         // const result = await fetcher(
         //     'https://tokengarden.loca.lt/api/v1/dev/safe/timerTest',
         //     webhookOptions(body),
         // );
-
-        // if (result.error) {
-        //     console.error(result.message);
-        //     console.error(result.error);
-        // } else {
-        //     // console.log('result', result);
-        //     console.log(
-        //         `${result.minterAddress} with   tokenId ${result.tokenId} has been added or updated`,
-        //     );
-        // }
+        console.log(data);
+        if (data.error) {
+            console.error(data.message);
+            console.error(data.error);
+        } else {
+            // console.log('result', result);
+            console.log(
+                `${data.result.minterAddress} with   tokenId ${data.result.tokenId} has been added or updated`,
+            );
+        }
     }
 
     await runOnce();

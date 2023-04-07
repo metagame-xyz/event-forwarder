@@ -9,9 +9,7 @@ import {
     SLACK_API_TOKEN,
     channelId,
     openseaForceUpdateURL,
-    FetcherError,
     networkStrings,
-    ALCHEMY_API_KEY,
     getContractAbi,
     blackholeAddress,
     newMintString,
@@ -30,16 +28,20 @@ import {
     NOMAD_WHITEHAT_WEBHOOK_URL,
     LLAMA_PFP_CONTRACT_ADDRESS,
     LLAMA_PFP_WEBHOOK_URL,
+    ROBO_NOVA_CONTRACT_ADDRESS,
+    ROBO_NOVA_WEBHOOK_URL,
+    CDMX_AXOLOTLS_CONTRACT_ADDRESS,
+    AVATAR_STUDIO_WEBHOOK_URL,
+    VANDERBILT_CONTRACT_ADDRESS,
     sleep,
     NETWORK,
     networkNames,
+    alchemyWebsocketRrcUrl,
 } from './utils/index.mjs';
 
 import { logError, logSuccess } from './utils/logging.mjs';
 
-const web3 = createAlchemyWeb3(
-    `wss://${networkStrings.alchemy}alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
-);
+const web3 = createAlchemyWeb3(alchemyWebsocketRrcUrl);
 
 const slackClient = new WebClient(SLACK_API_TOKEN);
 
@@ -85,7 +87,25 @@ const contracts = [
         nftName: 'llamaPfp',
         contractAddress: LLAMA_PFP_CONTRACT_ADDRESS,
         webhookURL: LLAMA_PFP_WEBHOOK_URL,
-        testNetwork: networkNames.goerli,
+        testNetwork: networkNames.sepolia,
+    },
+    {
+        nftName: 'robo-nova',
+        contractAddress: ROBO_NOVA_CONTRACT_ADDRESS,
+        webhookURL: ROBO_NOVA_WEBHOOK_URL,
+        testNetwork: networkNames.sepolia,
+    },
+    {
+        nftName: 'cdmx-axolotls',
+        contractAddress: CDMX_AXOLOTLS_CONTRACT_ADDRESS,
+        webhookURL: AVATAR_STUDIO_WEBHOOK_URL,
+        testNetwork: networkNames.sepolia,
+    },
+    {
+        nftName: 'commodore', // project slug
+        contractAddress: VANDERBILT_CONTRACT_ADDRESS,
+        webhookURL: AVATAR_STUDIO_WEBHOOK_URL,
+        testNetwork: networkNames.sepolia,
     },
 ];
 
