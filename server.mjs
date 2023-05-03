@@ -89,12 +89,12 @@ const contracts = [
         webhookURL: LLAMA_PFP_WEBHOOK_URL,
         testNetwork: networkNames.sepolia,
     },
-    // {
-    //     nftName: 'robo-nova',
-    //     contractAddress: ROBO_NOVA_CONTRACT_ADDRESS,
-    //     webhookURL: ROBO_NOVA_WEBHOOK_URL,
-    //     testNetwork: networkNames.sepolia,
-    // },
+    {
+        nftName: 'robo-nova',
+        contractAddress: ROBO_NOVA_CONTRACT_ADDRESS,
+        webhookURL: ROBO_NOVA_WEBHOOK_URL,
+        testNetwork: networkNames.sepolia,
+    },
     // {
     //     nftName: 'cdmx-axolotls',
     //     contractAddress: CDMX_AXOLOTLS_CONTRACT_ADDRESS,
